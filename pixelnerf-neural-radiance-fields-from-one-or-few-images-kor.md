@@ -1,8 +1,14 @@
-# pixelNeRF: Neural Radiance Fields from One or Few Images \[KOR]
+---
+description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images / CVPR 2021'
+---
+
+# pixelNeRF: Neural Radiance Fields from One or Few Images \[Kor]
+
+**English version** of this article is available.
 
 ### 1. Introduction
 
-오늘 소개할 논문은 PixelNeRF: Neural Radiance Fields from one or few images로 view synthesis 분야에 큰 발전을 이룬 NeRF(ECCV 2020)의 후속연구 논문입니다. 우선, view synthesis 분야와 NeRF가 생소하신 분들을 위해 간략한 설명을 하겠습니다.
+오늘 소개할 논문은 PixelNeRF: Neural Radiance Fields from one or few images로 **view synthesis** 분야에 큰 발전을 이룬 **NeRF**(ECCV 2020)의 후속 연구입니다. 우선, view synthesis 분야와 NeRF가 생소하신 분들을 위해 간략한 설명을 하겠습니다.
 
 #### 1.1 Problem Definition
 
@@ -17,9 +23,10 @@
 > 자세한 설명은 아래 related works 파트를 확인해주세요 :)
 
 * NeRF의 목적은 카메라를 이용해서 찍은 n개의 2D 이미지에서 빛과 원근감을 복원하여 새로운 각도에서 물체를 찍은 2D 이미지를 생성하는 것입니다.
-* 이 과정에서 input이 이미지의 coordinate \$$(x,y,z)\$$와 viewing direction \$$d:(\theta,\phi)\$$, output이 해당 pixel의 RGB value \$$c\$$ 와 volume density \$$\sigma\$$ 인 MLP를 사용합니다.
-  * \$$((x,y,z),(\theta, \phi)) \rightarrow (c, \sigma)\$$
-  * 이때 한가지 특징적인 것은 pixel 위치마다의 RGB값을 하나의 행렬로 discrete하게 표현하는 것이 아니라, pixel 좌표에서 RGB값으로 변환해주는 하나의 함수를 학습하여 사용한다는 것입니다. 이러한 방법을 neural implicit representation이라 부르며, super-resolution등 다양한 CV분야에서 사용되고 있습니다.
+* 이 과정에서 input이 이미지의 coordinate $$(x,y,z)$$와 viewing direction \$$d:(\theta,\phi)\$$, output이 해당 pixel의 RGB value \$$c\$$ 와 volume density \$$\sigma\$$ 인 MLP를 사용합니다.
+* \$$((x,y,z),(\theta, \phi)) \rightarrow (c, \sigma)\$$
+* 이때 한가지 특징적인 것은 pixel 위치마다의 RGB값을 하나의 행렬로 discrete하게 표현하는 것이 아니라, pixel 좌표에서 RGB값으로 변환해주는 하나의 함수를 학습하여 사용한다는 것입니다. 이러한 방법을 neural implicit representation이라 부르며, super-resolution등 다양한 CV분야에서 사용되고 있습니다.
+*
 
 \[사진-nerf 실험결과]
 
@@ -223,3 +230,21 @@ PixelNeRF can obtain some reconstruction from only one view and outputs better r
 본 논문에서 제안한 pixelNeRF는 적은 수의 이미지 만으로도 view synthesis task를 잘 해결하기 위해 기존 NeRF에 scene prior를 학습하는 과정을 추가하여 NeRF를 비롯한 기존 view synthesis 모델들의 한계점을 보완하였습니다. 다양한 실험을 통해 pixelNeRF가 실제로도 다양한 환경에서 잘 작동함을 알 수 있습니다.
 
 그러나, 몇가지 한계점들은 아직 존재하는데요. NeRF와 마찬가지로 rendering시간이 굉장히 오래걸리며, ray sampling bounds/positional encoding에 사용되는 parameter등을 수동으로 조정해야하기때문에 scale-variant합니다.또한, DTU dataset으로 real image에 대한 적용 가능성을 보였지만 DTU data도 제약된 상황에서만들어진 데이터 셋이기 때문에 실제로 굉장히 raw한 large-scale wide dataset에대해서도
+
+#### Take home message
+
+
+
+
+
+### 6. Author&#x20;
+
+**권다희 (Dahee Kwon)**
+
+* KAIST AI&#x20;
+* Contact: \[email], \[github]
+
+
+
+### 7. Reference & Additional materials&#x20;
+

@@ -28,8 +28,6 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 * 이때 한가지 특징적인 것은 pixel 위치마다의 RGB값을 하나의 행렬로 discrete하게 표현하는 것이 아니라, pixel 좌표에서 RGB값으로 변환해주는 하나의 함수를 학습하여 사용한다는 것입니다. 이러한 방법을 neural implicit representation이라 부르며, super-resolution등 다양한 CV분야에서 사용되고 있습니다.
 *
 
-\[사진-nerf 실험결과]
-
 위 사진과 같이 NeRF를 사용하면 원하는 각도에 따라 명확한 깊이감과(물체간의 전후관계), 보는 각도에 따라 달라지는 이미지 등을 매우 잘 표현해줍니다.
 
 #### 1.2 Motivation
@@ -40,7 +38,7 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 아래 그림과 같이 pixelNeRF는 NeRF보다 더 적은 입력 이미지에 대해서도 훌륭한 결과를 생성한다는 것을 알 수 있습니다.
 
-\[사진-pixelnerf 실험결과]
+![figure1](/images/figure1.png)
 
 #### 1.2 Contribution
 
@@ -94,7 +92,7 @@ $$
 
 이 과정들은 모두 미분이 가능하기에 gradient descent로 최적화 가능합니다.
 
-\[nerf 작동 사진]
+![figure2](/images/figure2.png)
 
 그림을 통해 한번 더 정리하자면, 우선 (a) 2D이미지에서 3차원 좌표 (x,y,z) 및 direction d를 추출합니다. _추출 과정은 본 논문 저자의 이전 연구인 \[LL]를 따릅니다._ (b) 그 후 neural radiance field를 이용해 각 좌표에서의 color와 density값을 구합니다. (c) 위 식을 통해 3차원의 volume을 2차원의 이미지로 랜더링 합니다. (d) 이렇게 구한 각 2D 좌표에서의 RGB값을 ground truth와 비교하며 함수를 최적화합니다.
 
@@ -111,7 +109,7 @@ PixelNeRF 이전에도 few-shot or single-shot view synthesis를 위해 학습�
 
 그러나, 대부분이 3차원이 아닌 2.5차원의 데이터를 사용하거나, interpolation을 활용해 depth 추정하는 고전적인 방법을 사용하였다. 3D 객체를 모델링함에 있어서도 (2D 이미지가 아닌) 3D object 전체에 대한 정보를 필요로 하거나 이미지의 global한 feature만 고려하는 등의 한계가 존재하였다. pixelNeRF는 이러한 기존 방법론의 단점들을 보완하였다.
 
-\[비교 사진]
+![figure3](/images/figure3.png)
 
 또한, 대부분의 3D learning 방법들은 일정한 방향으로만 정렬되는 예측 공간 (object-centered coordinate system)을 사용했는데, 이런 경우 다양한 예측이 어렵다는 단점이 있다. pixelNeRF는 viewer-centered coordinate system을 차용하여 unseen object에 대해서도 reconstruction이 수월하도록 하였다.
 
@@ -151,7 +149,7 @@ $$
 
 즉, nerf와 달리 input에 대한 pre-processing을 통해 input image의 spatial feature를 추출하고 이것을 nerf network에 추가한다는 점이 기존 nerf와 차별화된 점이라 할 수 있습니다.
 
-\[figure2 사진]
+![figure4](/images/figure4.png)
 
 #### 3.2 Multi-view pixelNeRF
 
@@ -200,24 +198,22 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 
 1.  ShapeNet 벤치마크 데이터셋에서 category-specific한 경우와 category-agnostic한 경우 모두에서의 view synthesis를 시행하였습니다.
 
-    \[figure3, table2]
+    ![figure5](/images/figure5.png)
 
-    \[figure5]
-
-    \[table4]
+    ![figure6](/images/figure6.png)
 
     * achieve new sota results for view synthesis and shapenet both setting. train a single model to the 13 largest categories of shapenet.
     * softras (comparing model) outputs a mesh of limited resolution and cannot represent arbitrary topologies
     * DVR uses an implicit surfaceto allow arbitrary topology it tends to misfind structure since it continues to use a single global latent vector. SRN does not use image features at all and instead requires a test time latent version step using ground truth absolute camera poses. pixelnerf catures more fine detail in both appearance and geometry compared to the baselines.
 2.  학습된 prior를 통해 ShapeNet 데이터 내 unseen category혹은 multi-object data에 대해서도 view synthesis를 적용 가능함을 보였다.
 
-    \[figure 6,7,table5]
+    ![figure7](/images/figure7.png)
 
     * Rather than using canonical space, using only relative camera poses both at training and test time. This choice of coordinate system also makes PixelNeRF applicable in more general settings. Training the model only on airplanes cars and chairs, we find that it can generalize to additional unseen object categories with superiorperformance compared to others.
     * Can also train through scenes of two signatures without further modification.
 3.  DTU MVS dataset과 같은 실제 장면에 대해서도 view synthesis를 시행하였다.
 
-    \[figure9]
+    ![figure8](/images/figure8.png)
 
     * Can apply a trained PixelNeRF to real cars in the sim to real setting without any fine tuning or camera estimation. Since the pixelnerf operates in view space and does not require mask supervision, it can also perform wide baseline view synthesis on complex real scenes from the DTU dataset using only 88 training scene
 

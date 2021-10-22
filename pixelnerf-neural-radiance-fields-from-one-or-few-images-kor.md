@@ -23,8 +23,8 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 > 자세한 설명은 아래 related works 파트를 확인해주세요 :)
 
 * NeRF의 목적은 카메라를 이용해서 찍은 n개의 2D 이미지에서 빛과 원근감을 복원하여 새로운 각도에서 물체를 찍은 2D 이미지를 생성하는 것입니다.
-* 이 과정에서 input이 이미지의 coordinate $$(x,y,z)$$와 viewing direction \$$d:(\theta,\phi)\$$, output이 해당 pixel의 RGB value \$$c\$$ 와 volume density \$$\sigma\$$ 인 MLP를 사용합니다.
-* \$$((x,y,z),(\theta, \phi)) \rightarrow (c, \sigma)\$$
+* 이 과정에서 input이 이미지의 coordinate $$(x,y,z)$$와 viewing direction $$d:(\theta,\phi)$$, output이 해당 pixel의 RGB value $$c$$ 와 volume density $$\sigma$$ 인 MLP를 사용합니다.
+* $$((x,y,z),(\theta, \phi)) \rightarrow (c, \sigma)$$
 * 이때 한가지 특징적인 것은 pixel 위치마다의 RGB값을 하나의 행렬로 discrete하게 표현하는 것이 아니라, pixel 좌표에서 RGB값으로 변환해주는 하나의 함수를 학습하여 사용한다는 것입니다. 이러한 방법을 neural implicit representation이라 부르며, super-resolution등 다양한 CV분야에서 사용되고 있습니다.
 *
 
@@ -59,38 +59,38 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 _(3D object는 2D와 달리 굉장히 sparse하므로 RGB값을 discrete한 행렬로 연산하는 것 보다 이와 같은 방법이 계산-효율적이라고 합니다.)_
 
-\$$\
+$$
 F\_\Theta: (X,d) \rightarrow (c,\sigma)\
-\$$\
+$$
 
 
-* Input: pixel의 위치 \$$X \in \mathbb{R}^3\$$ 와 보는 방향을 나타내는 unit vector \$$d \in \mathbb{R}^3\$$
-* Output: color 값과 density \$$\sigma\$$
+* Input: pixel의 위치 $$X \in \mathbb{R}^3$$ 와 보는 방향을 나타내는 unit vector $$d \in \mathbb{R}^3$$
+* Output: color 값과 density $$\sigma$$
 
-그렇다면, 함수 \$$F\_\Theta\$$로 구한 color/density값으로 어떻게 새로운 이미지를 랜더링할까요?
+그렇다면, 함수 $$F\_\Theta$$로 구한 color/density값으로 어떻게 새로운 이미지를 랜더링할까요?
 
 함수로 연산한 color값은 3차원 좌표에서의 RGB값을 말합니다. 이때 다른 각도에서 바라본 2D 이미지를 생성하려면, (그 방향에서 바라보았을 때) 앞에 위치한 부분에 가려지거나, 뒤에 위치한 것이 비치는 경우 등을 고려해야 합니다. 바로 output으로 density가 필요한 이유이지요.
 
 이러한 것들을 다 고려해 3차원에서의 RGB값들을 2D 이미지로 렌더링하는 수식이 아래와 같습니다.
 
-\$$\
+$$
 \hat{C}\_r=\int\_{t\_n}^{t\_f} T(t)\sigma(t)c(t)dt\
-\$$\
+$$
 
 
 **Notaion**
 
-* camera ray \$$r(t)=o+td\$$
-  * \$$t\$$: 실제 물체(원점)에서부터 구하고자 하는 사이의 거리.
-  * \$$d\$$: viewing direction unit vector
-  * \$$o\$$: origin
-*   \$$T(t)=exp(-\int\_{t\_n}^t\sigma(s)ds)\$$
+* camera ray $$r(t)=o+td$$
+  * $$t$$: 실제 물체(원점)에서부터 구하고자 하는 사이의 거리.
+  * $$d$$: viewing direction unit vector
+  * $$o$$: origin
+*   $$T(t)=exp(-\int\_{t\_n}^t\sigma(s)ds)$$
 
-    : t점을 가로막고 있는 점들의 density의 합 (\$$\approx\$$ 광선이 다른 입자에 부딪히지 않고 \$$t\_n\$$에서 \$$t\$$로 이동할 확률)
-* \$$\sigma(t)\$$ : t 지점에서의 density값
-* \$$c(t)\$$: t점에서의 RGB값
+    : t점을 가로막고 있는 점들의 density의 합 ($$\approx$$ 광선이 다른 입자에 부딪히지 않고 $$t\_n$$에서 $$t$$로 이동할 확률)
+* $$\sigma(t)$$ : t 지점에서의 density값
+* $$c(t)$$: t점에서의 RGB값
 
-이렇게 구한 추정된 RGB값 \$$\hat{C}_r\$$과 실제 RGB값 \$$C(r)\$$ 의 차이로 loss를 계산하여 학습을 진행합니다. \$$\mathcal{L}=\Sigma\_r ||\hat{C}_r -C(r)||^2\_2\$$
+이렇게 구한 추정된 RGB값 $$\hat{C}_r$$과 실제 RGB값 $$C(r)$$ 의 차이로 loss를 계산하여 학습을 진행합니다. $$\mathcal{L}=\Sigma\_r ||\hat{C}_r -C(r)||^2\_2$$
 
 이 과정들은 모두 미분이 가능하기에 gradient descent로 최적화 가능합니다.
 
@@ -119,10 +119,10 @@ PixelNeRF 이전에도 few-shot or single-shot view synthesis를 위해 학습�
 
 PixelNeRF의 구조는 크게 두 파트로 나눌 수 있습니다.
 
-* fully-convolutional image encoder \$$E\$$ : input image를 pixel-aligned feature로 인코딩 하는 부분
-* NeRF network \$$f\$$ : 객체의 색과 밀도를 연산하는 부분
+* fully-convolutional image encoder $$E$$ : input image를 pixel-aligned feature로 인코딩 하는 부분
+* NeRF network $$f$$ : 객체의 색과 밀도를 연산하는 부분
 
-인코더 \$$E\$$ 의 output값이 nerf network의 input으로 들어가게 되는데, 이 과정에 대해 이제 자세히 설명해보도록 하겠습니다.
+인코더 $$E$$ 의 output값이 nerf network의 input으로 들어가게 되는데, 이 과정에 대해 이제 자세히 설명해보도록 하겠습니다.
 
 #### 3.1 Single-Image pixelNeRF
 
@@ -130,21 +130,21 @@ PixelNeRF의 구조는 크게 두 파트로 나눌 수 있습니다.
 
 **Notation**
 
-* \$$I\$$: input image
-* \$$W\$$: extracted spatial feature \$$=E(I)\$$
-* \$$x\$$: camera ray
-* \$$\pi(x)\$$: image coordinates
-* \$$\gamma(\cdot)\$$ : positional encoding on \$$x\$$
+* $$I$$: input image
+* $$W$$: extracted spatial feature $$=E(I)$$
+* $$x$$: camera ray
+* $$\pi(x)$$: image coordinates
+* $$\gamma(\cdot)$$ : positional encoding on $$x$$
 
-1. 우선 input image \$$I\$$ 를 encoder에 넣어 spatial feature vector W를 추출합니다.
-2. 그 후 camera ray \$$x\$$ 위의 점들에 대해, 각각에 대응되는 image feature를 구합니다.
-   * camera ray \$$x\$$ 를 이미지 평면에 projection시키고 이에 해당하는 좌표 \$$\pi(x)\$$ 구합니다.
-   * 이 좌표 해당하는 spatial feature \$$W(\pi(x))\$$를 bilinear interpolation을 사용해 구합니다.
-3. 이렇게 구한 \$$W(\pi(x))\$$ 와 \$$\gamma(x), d\$$ 를 NeRF network에 넣고 color와 density값을 구합니다.
+1. 우선 input image $$I$$ 를 encoder에 넣어 spatial feature vector W를 추출합니다.
+2. 그 후 camera ray $$x$$ 위의 점들에 대해, 각각에 대응되는 image feature를 구합니다.
+   * camera ray $$x$$ 를 이미지 평면에 projection시키고 이에 해당하는 좌표 $$\pi(x)$$ 구합니다.
+   * 이 좌표 해당하는 spatial feature $$W(\pi(x))$$를 bilinear interpolation을 사용해 구합니다.
+3. 이렇게 구한 $$W(\pi(x))$$ 와 $$\gamma(x), d$$ 를 NeRF network에 넣고 color와 density값을 구합니다.
 
-\$$\
+$$
 f(\gamma(x),d;W(\pi(x)))=(\sigma,c)\
-\$$\
+$$
 
 
 1. NeRF에서와 동일한 방법으로 volume rendering을 진행합니다.
@@ -162,16 +162,16 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 1. 우선 multi-view task를 풀기 위해 저자는 각 이미지들의 상대적인 카메라 위치를 알 수 있다고 가정한다.
 2.  각각의 이미지 $I^{(i)}$ 속에서 원점에 위치한 객체들을 우리가 보고자하는 target 각도에서의 좌표에 맞게 변환한다.
 
-    \$$P^{(i)} = \[R^{(i)} \\; t^{(i)}]\$$ , \$$x^{(i)}= P^{(i)}x\$$, \$$d^{(i)}= R^{(i)}d\$$
+    $$P^{(i)} = \[R^{(i)} \\; t^{(i)}]$$ , $$x^{(i)}= P^{(i)}x$$, $$d^{(i)}= R^{(i)}d$$
 3. encoder를 통해 feature를 뽑을 땐 각각의 view frame마다 독립적으로 뽑아 NeRF network에 넣고 NeRF network의 final layer에서 합친다. 이는 다양한 각도에서의 이미지에서 최대한 많은 spatial feature을 뽑아내기 위한 것이다.
-   *   이를 수식으로 나타내기 위해 NeRF network의 initial layer를 \$$f\_1\$$, intermediate layer를 \$$V^{(i)}\$$, final layer를 \$$f\_2\$$ 라 하자.
+   *   이를 수식으로 나타내기 위해 NeRF network의 initial layer를 $$f\_1$$, intermediate layer를 $$V^{(i)}$$, final layer를 $$f\_2$$ 라 하자.
 
-       \$$\
+       $$
        V^{(i)}=f\_1(\gamma(x^{(i)}),d^{(i)}; W^{(i)}(\pi(x^{(i)}))) \\\ (\sigma,c)= f\_2 (\psi(V^{(i)},...,V^{(n)}))\
-       \$$\
+       $$
 
 
-       * \$$\psi\$$: average pooling operator
+       * $$\psi$$: average pooling operator
 
 즉, multi-view pixelNeRF의 단순화 버전이 single-view pixelNeRF인 셈이다.
 
@@ -185,14 +185,14 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 
 이때 성능은 표준적으로 사용하는 image quality metric들을 사용하였습니다.
 
-* PSNR: \$$10 log\_{10}(\frac{R^2}{MSE})\$$
-* SSIM: \$$\frac{(2\mu\_x \mu\_y + C\_1)(2\sigma\_{xy}+C\_2)}{(\mu\_x^2+ \mu\_y^2+ C\_1)(\sigma\_x^2+\sigma\_y^2+C\_2)}\$$
+* PSNR: $$10 log\_{10}(\frac{R^2}{MSE})$$
+* SSIM: $$\frac{(2\mu\_x \mu\_y + C\_1)(2\sigma\_{xy}+C\_2)}{(\mu\_x^2+ \mu\_y^2+ C\_1)(\sigma\_x^2+\sigma\_y^2+C\_2)}$$
 
 **Implementation Details**
 
 본 논문의 실험에선 imagenet에 pretrained된 resnet34 모델을 backbone network로 사용합니다. 4번째 pooling layer까지 feature를 추출하고, 그 이후 layer에선 (위 3에서 설명했듯이) 대응되는 좌표에 맞는 feature를 찾는 과정을 거칩니다. 이때, local한 feature와 global한 feature를 모두 사용하기위해, feature pyramid형태로 추출합니다. 여기서 feature pyramid란 서로 다른 해상도의 feature map을 쌓아올린 형태를 말합니다.
 
-또한, NeRF network \$$f\$$에서도 ResNet구조를 차용하여 좌표 및 viewing direction \$$\gamma(x), d\$$를 먼저 입력하고 feature vector \$$W(\phi(x))\$$를 residual로써 각 ResNet block 앞부분에 더합니다.
+또한, NeRF network $$f$$에서도 ResNet구조를 차용하여 좌표 및 viewing direction $$\gamma(x), d$$를 먼저 입력하고 feature vector $$W(\phi(x))$$를 residual로써 각 ResNet block 앞부분에 더합니다.
 
 ***
 

@@ -15,8 +15,7 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 **View Synthesis**
 
 * 특정 각도에서 찍은 여러 사진들을 활용해 임의의 새로운 각도에서의 사진을 생성하는 task입니다.
-* 이 문제가 간단해보일 수도 있지만,
-* 이 문제는 ECCV 2020에서 발표된 NeRF를 바탕으로 새로운 국면을 맞았다.
+* ~~~ 
 
 **NeRF**
 
@@ -56,11 +55,10 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 _(3D object는 2D와 달리 굉장히 sparse하므로 RGB값을 discrete한 행렬로 연산하는 것 보다 이와 같은 방법이 계산-효율적이라고 합니다.)_
 
-```
 $$
 F_\Theta: (X,d) \rightarrow (c,\sigma)
 $$
-```
+
 
 * Input: pixel의 위치 $$X \in \mathbb{R}^3$$ 와 보는 방향을 나타내는 unit vector $$d \in \mathbb{R}^3$$
 * Output: color 값과 density $$\sigma$$
@@ -95,7 +93,7 @@ $$
 
 그림을 통해 한번 더 정리하자면, 우선 (a) 2D이미지에서 3차원 좌표 (x,y,z) 및 direction d를 추출합니다. _추출 과정은 본 논문 저자의 이전 연구인 \[LL]를 따릅니다._ (b) 그 후 neural radiance field를 이용해 각 좌표에서의 color와 density값을 구합니다. (c) 위 식을 통해 3차원의 volume을 2차원의 이미지로 랜더링 합니다. (d) 이렇게 구한 각 2D 좌표에서의 RGB값을 ground truth와 비교하며 함수를 최적화합니다.  &#x20;
 
-\*이 기본 구조 외에도 논문에선 positional encoding , hierarchical volume sampling등 성능 향상을 위한 다양한 기법들을 사용해 모델의 성능을 높이지만, 본 paper review의 주제를 벗어나므로 그 부분은 생략하도록 하겠습니다.\*&#x20;
+_이 기본 구조 외에도 논문에선 positional encoding , hierarchical volume sampling등 성능 향상을 위한 다양한 기법들을 사용해 모델의 성능을 높이지만, 본 paper review의 주제를 벗어나므로 그 부분은 생략하도록 하겠습니다._
 
 > 여기까지가 본 논문에 대한 이해를 위해 필요한 기본적인 NeRF에 대한 설명입니다. 혹시나 이 설명이 부족하다 생각하신 분은 포스팅 아래 참고자료의 링크를 참고해주세요 :)
 
@@ -159,7 +157,7 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 
     &#x20; $$P^{(i)} = [R^{(i)} \; t^{(i)}], \ x^{(i)}= P^{(i)}x$$, $$d^{(i)}= R^{(i)}d$$
 3. encoder를 통해 feature를 뽑을 땐 각각의 view frame마다 독립적으로 뽑아 NeRF network에 넣고 NeRF network의 final layer에서 합친다. 이는 다양한 각도에서의 이미지에서 최대한 많은 spatial feature을 뽑아내기 위한 것이다.
-   *   이를 수식으로 나타내기 위해 NeRF network의 initial layer를 $$f\_1$$, intermediate layer를 $$V^{(i)}$$, final layer를 $$f\_2$$ 라 하자.
+   *   이를 수식으로 나타내기 위해 NeRF network의 initial layer를 $$f_1$$, intermediate layer를 $$V^{(i)}$$, final layer를 $$f_2$$ 라 하자.
 
        $$
        V^{(i)}=f_1(\gamma(x^{(i)}),d^{(i)}; W^{(i)}(\pi(x^{(i)}))) \\\ (\sigma,c)= f_2 (\psi(V^{(i)},...,V^{(n)}))\
@@ -179,8 +177,8 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 
 이때 성능은 표준적으로 사용하는 image quality metric들을 사용하였습니다.
 
-* PSNR: $$10 log_{10}(\frac{R^2}{MSE})$$​
-* SSIM: $$\frac{(2\mu\_x \mu\_y + C\_1)(2\sigma\_{xy}+C\_2)}{(\mu\_x^2+ \mu\_y^2+ C\_1)(\sigma\_x^2+\sigma\_y^2+C\_2)}$$
+* PSNR: $$10 log_{10}(\frac{R^2}{MSE})$$ 
+* SSIM: $$\frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy}+C_2)}{(\mu_x^2+ \mu_y^2+ C_1)(\sigma_x^2+\sigma_y^2+C_2)}$$
 
 **Implementation Details**
 

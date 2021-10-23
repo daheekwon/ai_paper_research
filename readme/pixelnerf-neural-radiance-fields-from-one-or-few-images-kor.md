@@ -4,7 +4,7 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 # pixelNeRF \[Kor]
 
-[**English version**]() of this article is available.
+[**English version**](https://app.gitbook.com/s/W3CRfWGpcjT1Kq28m88Z/readme/pixelnerf-eng) of this article is available.
 
 ### 1. Introduction
 
@@ -183,8 +183,8 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 
 1.  ShapeNet 벤치마크 데이터셋에서 category-specific한 경우와 category-agnostic한 경우 모두에서의 view synthesis를 시행하였습니다.
    
-   <img src = "../images/figure5.png" width="100%">
-    ![figure6](../images/figure6.png){: width="100" height="100"}
+    ![figure5](../images/figure5.png)
+    ![figure6](../images/figure6.png)
 
     * achieve new sota results for view synthesis and shapenet both setting. train a single model to the 13 largest categories of shapenet.
     * softras (comparing model) outputs a mesh of limited resolution and cannot represent arbitrary topologies
@@ -192,13 +192,13 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
     
 2.  학습된 prior를 통해 ShapeNet 데이터 내 unseen category혹은 multi-object data에 대해서도 view synthesis를 적용 가능함을 보였다.
 
-    ![figure7](../images/figure7.png){: width="100" height="100"}
+    ![figure7](../images/figure7.png)
 
     * Rather than using canonical space, using only relative camera poses both at training and test time. This choice of coordinate system also makes PixelNeRF applicable in more general settings. Training the model only on airplanes cars and chairs, we find that it can generalize to additional unseen object categories with superiorperformance compared to others.
     * Can also train through scenes of two signatures without further modification.
 3.  DTU MVS dataset과 같은 실제 장면에 대해서도 view synthesis를 시행하였다.
 
-    ![figure8](../images/figure8.png){: width="100" height="100"}
+    ![figure8](../images/figure8.png)
 
     * Can apply a trained PixelNeRF to real cars in the sim to real setting without any fine tuning or camera estimation. Since the pixelnerf operates in view space and does not require mask supervision, it can also perform wide baseline view synthesis on complex real scenes from the DTU dataset using only 88 training scene
 

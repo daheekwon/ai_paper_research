@@ -8,7 +8,7 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 ### 1. Introduction
 
-오늘 소개할 논문은 PixelNeRF: Neural Radiance Fields from one or few images로 **view synthesis** 분야에 큰 발전을 이룬 [**NeRF**(ECCV 2020)](https://arxiv.org/abs/2003.08934)의 후속 연구입니다.
+오늘 소개할 논문은 [PixelNeRF: Neural Radiance Fields from one or few images](https://arxiv.org/abs/2012.02190)로 **view synthesis** 분야에 큰 발전을 이룬 [**NeRF**(ECCV 2020)](https://arxiv.org/abs/2003.08934)의 후속 연구입니다.
 
 #### 1.1 Problem Definition
 

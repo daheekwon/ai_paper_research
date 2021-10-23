@@ -4,19 +4,19 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 # pixelNeRF \[Kor]
 
-**English version** of this article is available.
+[**English version**]() of this article is available.
 
 ### 1. Introduction
 
-오늘 소개할 논문은 PixelNeRF: Neural Radiance Fields from one or few images로 **view synthesis** 분야에 큰 발전을 이룬 **NeRF**(ECCV 2020)의 후속 연구입니다.
+오늘 소개할 논문은 PixelNeRF: Neural Radiance Fields from one or few images로 **view synthesis** 분야에 큰 발전을 이룬 [**NeRF**(ECCV 2020)](https://arxiv.org/abs/2003.08934)의 후속 연구입니다.
 
 #### 1.1 Problem Definition
 
 **View Synthesis**
 
-* 특정 각도에서 찍은 여러 사진들을 활용해 임의의 새로운 각도에서의 사진을 생성하는 task입니다.
-* ```
-  ```
+* 특정 각도에서 찍은 여러 사진들을 활용해 임의의 새로운 각도에서의 사진을 생성하는 task입니다. 사진을 찍으면 현실 세계에서의 3d물체가 2차원의 이미지로 기록이 되는데요, 그렇기 때문에 물체의 깊이/빛을 받는 각도 등에 대한 정보가 일부 소실되게 됩니다. 이때, 이러한 제한된 정보들을 잘 추론하고 복원하여 현실 세계의 3d물체를 모델링하고, 이 것을 다시 다른 각도에서의 2차원 이미지로 보여주는 것이라 이해하시면 될 것 같습니다. 
+* 단순히 갖고 있는 이미지들을 interpolation한다고 하여 새로운 각도에서의 이미지를 만들 수 있는 것이 아니기 때문에 굉장히 풀기 어려운 문제 중 하나입니다. 그러나, 작년 ECCV에 발표된 NeRF가 view synthesis 문제를 훌륭히 풀어 많은 관심을 받았습니다. 
+  
 
 **NeRF**
 
@@ -26,6 +26,7 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 * 이때 한가지 주목할만한 특징은 pixel 위치마다의 RGB값을 하나의 행렬로 discrete하게 표현하는 것이 아니라, pixel 좌표에서 RGB값으로 변환해주는 하나의 함수를 학습하여 사용한다는 것입니다. 이러한 방법을 neural implicit representation(혹은 neural radiance field)라 부르며, super-resolution 등 다양한 CV분야에서 사용되고 있습니다.
 
 > 자세한 설명은 아래 related works 파트를 확인해주세요 :)
+
 
 #### 1.2 Motivation
 
@@ -37,14 +38,6 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 ![figure1](../images/figure1.png)
 
-#### 1.2 Contribution
-
-이 논문의 main contribution을 정리하면 다음과 같습니다.
-
-* pixelNeRF can be trained on a dataset of multi-view images without additional supervision such as ground truth 3D shape or object masks.
-* pixelNeRF predicts a NeRF representation in the camera coordinate system of the input image instead of a canonical coordinate frame.
-* it is fully convolutional, allowing it to preserve the spatial alignment between the image and the output 3D representation.
-* pixelNeRF can incorporate a variable number of posed input views at test time without requiring any test-time optimization
 
 ### 2. Related Work
 
@@ -89,7 +82,7 @@ $$
 
 ![figure2](../images/figure2.png)
 
-그림을 통해 한번 더 정리하자면, 우선 (a) 2D이미지에서 3차원 좌표 (x,y,z) 및 direction d를 추출합니다. _추출 과정은 본 논문 저자의 이전 연구인 \[LL]를 따릅니다._ (b) 그 후 neural radiance field를 이용해 각 좌표에서의 color와 density값을 구합니다. (c) 위 식을 통해 3차원의 volume을 2차원의 이미지로 랜더링 합니다. (d) 이렇게 구한 각 2D 좌표에서의 RGB값을 ground truth와 비교하며 함수를 최적화합니다.
+그림을 통해 한번 더 정리하자면, 우선 (a) 2D이미지에서 3차원 좌표 (x,y,z) 및 direction d를 추출합니다. _추출 과정은 본 논문 저자의 이전 연구인 [LL](https://arxiv.org/pdf/1905.00889.pdf)를 따릅니다._ (b) 그 후 neural radiance field를 이용해 각 좌표에서의 color와 density값을 구합니다. (c) 위 식을 통해 3차원의 volume을 2차원의 이미지로 랜더링 합니다. (d) 이렇게 구한 각 2D 좌표에서의 RGB값을 ground truth와 비교하며 함수를 최적화합니다.
 
 _이 기본 구조 외에도 논문에선 positional encoding , hierarchical volume sampling등 성능 향상을 위한 다양한 기법들을 사용해 모델의 성능을 높이지만, 본 paper review의 주제를 벗어나므로 그 부분은 생략하도록 하겠습니다._
 
@@ -190,22 +183,22 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 
 1.  ShapeNet 벤치마크 데이터셋에서 category-specific한 경우와 category-agnostic한 경우 모두에서의 view synthesis를 시행하였습니다.
 
-    ![figure5](../images/figure5.png)
+    ![figure5](../images/figure5.png){: width="100" height="100"}
 
-    ![figure6](../images/figure6.png)
+    ![figure6](../images/figure6.png){: width="100" height="100"}
 
     * achieve new sota results for view synthesis and shapenet both setting. train a single model to the 13 largest categories of shapenet.
     * softras (comparing model) outputs a mesh of limited resolution and cannot represent arbitrary topologies
     * DVR uses an implicit surfaceto allow arbitrary topology it tends to misfind structure since it continues to use a single global latent vector. SRN does not use image features at all and instead requires a test time latent version step using ground truth absolute camera poses. pixelnerf catures more fine detail in both appearance and geometry compared to the baselines.
 2.  학습된 prior를 통해 ShapeNet 데이터 내 unseen category혹은 multi-object data에 대해서도 view synthesis를 적용 가능함을 보였다.
 
-    ![figure7](../images/figure7.png)
+    ![figure7](../images/figure7.png){: width="100" height="100"}
 
     * Rather than using canonical space, using only relative camera poses both at training and test time. This choice of coordinate system also makes PixelNeRF applicable in more general settings. Training the model only on airplanes cars and chairs, we find that it can generalize to additional unseen object categories with superiorperformance compared to others.
     * Can also train through scenes of two signatures without further modification.
 3.  DTU MVS dataset과 같은 실제 장면에 대해서도 view synthesis를 시행하였다.
 
-    ![figure8](../images/figure8.png)
+    ![figure8](../images/figure8.png){: width="100" height="100"}
 
     * Can apply a trained PixelNeRF to real cars in the sim to real setting without any fine tuning or camera estimation. Since the pixelnerf operates in view space and does not require mask supervision, it can also perform wide baseline view synthesis on complex real scenes from the DTU dataset using only 88 training scene
 
@@ -215,7 +208,7 @@ PixelNeRF can obtain some reconstruction from only one view and outputs better r
 
 ### 5. Results
 
-본 논문에서 제안한 pixelNeRF는 적은 수의 이미지 만으로도 view synthesis task를 잘 해결하기 위해 기존 NeRF에 scene prior를 학습하는 과정을 추가하여 NeRF를 비롯한 기존 view synthesis 모델들의 한계점을 보완하였습니다. 다양한 실험을 통해 pixelNeRF가 실제로도 다양한 환경에서 잘 작동함을 알 수 있습니다.
+본 논문에서 제안한 pixelNeRF는 적은 수의 이미지 만으로도 view synthesis task를 잘 해결하기 위해 기존 NeRF에 scene prior를 학습하는 과정을 추가하여 NeRF를 비롯한 기존 view synthesis 모델들의 한계점을 보완하였습니다. 다양한 실험을 통해 pixelNeRF가 일반화된 다양한 환경(multi-objects, unseen category, real dataset etc.)에서 잘 작동함을 알 수 있습니다.
 
 그러나, 몇가지 한계점들은 아직 존재하는데요. NeRF와 마찬가지로 rendering시간이 굉장히 오래걸리며, ray sampling bounds/positional encoding에 사용되는 parameter등을 수동으로 조정해야하기때문에 scale-variant합니다.또한, DTU dataset으로 real image에 대한 적용 가능성을 보였지만 DTU data도 제약된 상황에서만들어진 데이터 셋이기 때문에 실제로 굉장히 raw한 large-scale wide dataset에대해서도
 
@@ -226,6 +219,15 @@ PixelNeRF can obtain some reconstruction from only one view and outputs better r
 **권다희 (Dahee Kwon)**
 
 * KAIST AI
-* Contact: \[email], \[github]
+* Contact
+  * email: <daheekwon@kaist.ac.kr>
+  * github: <github.com/daheekwon>
 
 ### 7. Reference & Additional materials
+
+* [NeRF paper](https://arxiv.org/abs/2003.08934)
+* [NeRF 설명영상](https://www.youtube.com/watch?v=zkeh7Tt9tYQ)
+* [pixelNeRF official site](https://alexyu.net/pixelnerf/)
+* [pixelNeRF code](https://github.com/sxyu/pixel-nerf)
+
+

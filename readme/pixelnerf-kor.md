@@ -14,7 +14,7 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 **View Synthesis**
 
-* 특정 각도에서 찍은 여러 사진들을 활용해 임의의 새로운 각도에서의 사진을 생성하는 문입니다. 사진을 찍으면 현실 세계에서의 3d물체가 2차원의 이미지로 기록이 되는데요, 그렇기 때문에 물체의 깊이/빛을 받는 각도 등에 대한 정보가 일부 소실되게 됩니다. 이때, 이러한 제한된 정보들을 바탕으로 가려진 정보를 잘 추론하고 복원하여 현실 세계의 물체를 모델링하고, 이것을 다시 다른 각도에서의 2차원 이미지로 보여주는 것이라 이해하시면 될 것 같습니다. 단순히 주어진 이미지들을 interpolation한다고 하여 새로운 각도에서의 이미지를 만들 수 있는 것이 아니고 다양한 외부적인 요소들을 고려해야 하기때문에 굉장히 풀기 어려운 문제 중 하나입니다.&#x20;
+* 특정 각도에서 찍은 여러 사진들을 활용해 임의의 새로운 각도에서의 사진을 생성하는 문입니다. 사진을 찍으면 현실 세계에서의 3d물체가 2차원의 이미지로 기록이 되는데요, 그렇기 때문에 물체의 깊이/빛을 받는 각도 등에 대한 정보가 일부 소실되게 됩니다. 이때, 이러한 제한된 정보들을 바탕으로 가려진 정보를 잘 추론하고 복원하여 현실 세계의 물체를 모델링하고, 이것을 다시 다른 각도에서의 2차원 이미지로 보여주는 것이라 이해하시면 될 것 같습니다. 단순히 주어진 이미지들을 interpolation한다고 하여 새로운 각도에서의 이미지를 만들 수 있는 것이 아니고 다양한 외부적인 요소들을 고려해야 하기때문에 굉장히 풀기 어려운 문제 중 하나입니다.
 * 그러나, 2020년에 발표된 NeRF가 view synthesis 문제에서 기존보다 훨씬 훌륭한 성능을 내 많은 관심을 받았습니다.
 
 **NeRF**
@@ -28,9 +28,9 @@ description: 'Alex Yu / pixelNeRF: Neural Radiance Fields from One or Few Images
 
 #### 1.2 Motivation
 
-엄청난 성능으로 큰 파장을 불러일으킨 NeRF이지만, 한계점도 존재합니다. 고품질 이미지를 합성하기 위해 하나의 객체에 대한 **여러 각도** 의 이미지가 필요하고, 긴 시간 동안 모델을 **최적화**해야  한다는 것인데요. 오늘 소개할 pixel NeRF는 이런 NeRF의 한계점을 보완하면서 훨씬 더 짧은 시간에 안에 적은 수의 이미지 만으로 새로운 시점에서의 이미지를 생성하는 방법을 제안합니다.
+엄청난 성능으로 큰 파장을 불러일으킨 NeRF이지만, 한계점도 존재합니다. 고품질 이미지를 합성하기 위해 하나의 객체에 대한 **여러 각도** 의 이미지가 필요하고, 긴 시간 동안 모델을 **최적화**해야 한다는 것인데요. 오늘 소개할 pixel NeRF는 이런 NeRF의 한계점을 보완하면서 훨씬 더 짧은 시간에 안에 적은 수의 이미지 만으로 새로운 시점에서의 이미지를 생성하는 방법을 제안합니다.
 
-#### 1.3 Idea 
+#### 1.3 Idea
 
 적은 수의 이미지만으로도 그럴듯한 이미지를 생성할 수 있으려면, 각 scene들의 공간적인 관계를 모델이 학습할 수 있어야 합니다. 이를 위해 pixelNeRF는 이미지의 **spatial features**를 추출해 input으로 사용합니다. 즉, spatial features들이 view synthesis를 하기 위한 scene prior로서의 역할을 하는 것입니다. (이때 feature는 fully convolutional image feature를 사용합니다.)
 
@@ -63,7 +63,7 @@ $$
 \hat{C}_r=\int_{t_n}^{t_f} T(t)\sigma(t)c(t)dt\
 $$
 
-**Notaion**
+**Notation**
 
 * camera ray $$r(t)=o+td$$
   * $$t$$: 실제 물체(원점)에서부터 구하고자 하는 사이의 거리
@@ -85,7 +85,7 @@ $$
 
 ![figure2](../images/figure2.png)
 
-그림을 통해 한번 더 정리하자면, 우선 (a) 2D이미지에서 3차원 좌표 (x,y,z) 및 direction d를 추출합니다. _추출 과정은 본 논문 저자의 이전 연구인 _[LLFF](https://arxiv.org/pdf/1905.00889.pdf)_를 따릅니다._ (b) 그 후 neural radiance field를 이용해 각 좌표에서의 color와 density값을 구합니다. (c) 위에서 설명한 식을 통해 3차원의 volume을 2차원의 이미지로 랜더링 합니다. (d) 이렇게 구한 각 2D 좌표에서의 RGB값을 ground truth와 비교하며 함수를 최적화합니다.
+그림을 통해 한번 더 정리하자면, 우선 (a) 2D이미지에서 3차원 좌표 (x,y,z) 및 direction d를 추출합니다. (_추출 과정은 본 논문 저자의 이전 연구인 _[_LLFF_](https://arxiv.org/pdf/1905.00889.pdf)_를 따릅니다.)_ (b) 그 후 neural radiance field를 이용해 각 좌표에서의 color와 density값을 구합니다. (c) 위에서 설명한 식을 통해 3차원의 volume을 2차원의 이미지로 랜더링 합니다. (d) 이렇게 구한 각 2D 좌표에서의 RGB값을 ground truth와 비교하며 함수를 최적화합니다.
 
 _이 기본 구조 외에도 논문에선 positional encoding , hierarchical volume sampling등 성능 향상을 위한 다양한 기법들을 사용해 모델의 성능을 높이지만, 본 paper review의 주제를 벗어나므로 그 부분은 생략하도록 하겠습니다._
 
@@ -97,8 +97,7 @@ _이 기본 구조 외에도 논문에선 positional encoding , hierarchical vol
 
 PixelNeRF 이전에도 few-shot or single-shot view synthesis를 위해 학습된 prior를 사용하는 다양한 연구가 존재하였습니다.
 
-그러나, 대부분이 3차원이 아닌 2.5차원의 데이터를 사용하거나, interpolation을 활용해 depth 추정하는 고전적인 방법을 사용하였습니다. 3D 객체를 모델링함에 있어서도 (2D 이미지가 아닌) 3D object 전체에 대한 정보를 필요로 하거나 이미지의 global한 feature만 고려하는 등 여러 한계가 존재하였습니다. 또한, 대부분의 3D learning 방법들은 일정한 방향으로만 정렬되는 예측 공간 (object-centered coordinate system)을 사용했는데, 이런 경우 다양한 예측이 어렵다는 단점이 있습니다. 
-pixelNeRF는 이러한 기존 방법론의 단점들을 보완하여 모델의 성능을 향상시켰습니다. 
+그러나, 대부분이 3차원이 아닌 2.5차원의 데이터를 사용하거나, interpolation을 활용해 depth 추정하는 고전적인 방법을 사용하였습니다. 3D 객체를 모델링함에 있어서도 (2D 이미지가 아닌) 3D object 전체에 대한 정보를 필요로 하거나 이미지의 global한 feature만 고려하는 등 여러 한계가 존재하였습니다. 또한, 대부분의 3D learning 방법들은 일정한 방향으로만 정렬되는 예측 공간 (object-centered coordinate system)을 사용했는데, 이런 경우 다양한 예측이 어렵다는 단점이 있습니다. pixelNeRF는 이러한 기존 방법론의 단점들을 보완하여 모델의 성능을 향상시켰습니다.
 
 ![figure3](../images/figure3.png)
 
@@ -109,7 +108,7 @@ pixelNeRF는 이러한 기존 방법론의 단점들을 보완하여 모델의 �
 * fully-convolutional image encoder $$E$$ : input image를 pixel-aligned feature로 인코딩 하는 부분
 * NeRF network $$f$$ : 객체의 색과 밀도를 연산하는 부분
 
-인코더 $$E$$ 의 output값이 nerf network의 input으로 들어가게 되는 것이지요. 이 과정에 대해 이제 자세히 설명해보도록 하겠습니다.
+인코더 $$E$$ 의 output값이 nerf network의 input으로 들어가게 되는 것이지요. 이제 이 과정에 대해 자세히 설명해보도록 하겠습니다.
 
 #### 3.1 Single-Image pixelNeRF
 
@@ -133,7 +132,7 @@ $$
 f(\gamma(x),d;W(\pi(x)))=(\sigma,c)\
 $$
 
-4. NeRF에서와 동일한 방법으로 volume rendering을 진행합니다.
+&#x20; 4\. NeRF에서와 동일한 방법으로 volume rendering을 진행합니다.
 
 즉, nerf와 달리 input에 대한 pre-processing을 통해 input image의 spatial feature를 추출하고 이것을 nerf network에 추가한다는 점이 기존 nerf와 차별화된 점이라 할 수 있습니다.
 
@@ -145,8 +144,8 @@ Few-shot view synthesis의 경우, 여러 사진이 들어오기 때문에 query
 
 기본적인 틀은 single-shot pixelNeRF와 여러 이미지를 모두 고려하기 위해 달라지는 부분들이 있습니다.
 
-1. 우선 multi-view task를 풀기 위해 저자는 각 이미지들의 상대적인 카메라 위치를 알 수 있다고 가정합니다. 
-2. 각각의 이미지 $I^{(i)}$ 속에서 원점에 위치한 객체들을 우리가 보고자하는 target 각도에서의 좌표에 맞게 변환합니다.
+1. 우선 multi-view task를 풀기 위해 저자는 각 이미지들의 상대적인 카메라 위치를 알 수 있다고 가정합니다.
+2.  각각의 이미지 $$I^{(i)}$$ 속에서 원점에 위치한 객체들을 우리가 보고자하는 target 각도에서의 좌표에 맞게 변환합니다.
 
     $$P^{(i)} = [R^{(i)} \; t^{(i)}], \ x^{(i)}= P^{(i)}x$$, $$d^{(i)}= R^{(i)}d$$
 3. encoder를 통해 feature를 뽑을 땐 각각의 view frame마다 독립적으로 뽑아 NeRF network에 넣고 NeRF network의 final layer에서 합칩니다. 이는 다양한 각도에서의 이미지에서 최대한 많은 spatial feature을 뽑아내기 위한 것입니다.
@@ -164,11 +163,11 @@ Few-shot view synthesis의 경우, 여러 사진이 들어오기 때문에 query
 
 **Baselines**
 
-기존 few-shot/ single-shot view synthesis의 SOTA 모델이었던 SRN과 DVR, 그리고 비슷한 구조(neural radiance field)의 네트워크를 사용한 NeRF와 비교하며 pixelNeRF의 성능을 보여줍니다.
+기존 few-shot / single-shot view synthesis의 SOTA 모델이었던 SRN과 DVR, 그리고 비슷한 구조(neural radiance field)의 네트워크를 사용한 NeRF와 비교하며 pixelNeRF의 성능을 보여줍니다.
 
 **Metrics**
 
-이때 성능은 표준적으로 사용하는 image quality metric들을 사용하였습니다.
+이때 성능 지표로는 많이 사용하는 image qualifying metric들을 사용하였습니다.
 
 * PSNR: $$10 log_{10}(\frac{R^2}{MSE})$$
 * SSIM: $$\frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy}+C_2)}{(\mu_x^2+ \mu_y^2+ C_1)(\sigma_x^2+\sigma_y^2+C_2)}$$
@@ -187,19 +186,21 @@ Few-shot view synthesis의 경우, 여러 사진이 들어오기 때문에 query
 
     ![figure5](../images/figure5.png)![figure6](../images/figure6.png)
 
-    하나의 pixelNeRF모델을 shapenet 내 가장 많은 13개의 카테고리에 대해 학습한 실험입니다. 위 결과를 보면 알 수 있듯이 pixelNeRF는 view synthesis의 측면에서 SOTA 결과를 보이고 있습니다. category-specific / category-agnostic한 경우 모두에서 가장 정교하고 그럴듯한 이미지를 생성하며, 이미지 성능 측도인 PSNR, SSIM 또한 가장 높은 수치를 보입니다. 
-    
+    하나의 pixelNeRF모델을 shapenet 내 가장 많은 13개의 카테고리에 대해 학습한 실험입니다. 위 결과를 보면 알 수 있듯이 pixelNeRF는 view synthesis의 측면에서 SOTA 결과를 보이고 있습니다. category-specific / category-agnostic한 경우 모두에서 가장 정교하고 그럴듯한 이미지를 생성하며, 이미지 성능 측도인 PSNR, SSIM 또한 가장 높은 수치를 보입니다.
 2.  학습된 prior를 통해 ShapeNet 데이터 내 unseen category혹은 multi-object data에 대해서도 view synthesis를 적용 가능함을 보였습니다.
 
-    ![figure7](../images/figure7.png)
- 
-    모델을 자동차와 비행기 그리고 의자에 대해서만 학습을 시킨 후, 다른 카테고리에 대해 view synthesis를 진행한 결과입니다. 여기서도 pixelNeRF의 성능이 잘 나타남을 알 수 있습니다. 논문에선 이렇게 일반화 가능한 이유가 바로 canonical space가 아닌 카메라의 상대적인 위치(view space)를 사용했기 때문이라고 설명합니다. 
-    
+
+
+    모델을 자동차와 비행기 그리고 의자에 대해서만 학습을 시킨 후, 다른 카테고리에 대해 view synthesis를 진행한 결과입니다. 여기서도 pixelNeRF의 성능이 잘 나타남을 알 수 있습니다. 논문에선 이렇게 일반화 가능한 이유가 바로 canonical space가 아닌 카메라의 상대적인 위치(view space)를 사용했기 때문이라고 설명합니다.
 3.  DTU MVS dataset과 같은 실제 장면에 대해서도 view synthesis를 시행하였습니다.
 
-    ![figure8](../images/figure8.png)
 
-    위 shapenet처럼 특정 물체에 대해 제한적으로 찍은 이미지가 이닌, 실제 이미지 데이터에 대해서도 scene 전체의 관점을 이동시키는 task도 비교적 잘 해냅니다. 88개의 학습 이미지 씬을 바탕으로 실험을 진행하여도 위와 같이 다양한 각도에서의 이미지를 만들어 냅니다. NeRF와 비교하면 적은 데이터로 전체 이미지 씬에 대한 모델링을 훨씬 잘 하고 있다는 것을 볼 수 있습니다. 
+
+    위 shapenet처럼 특정 물체에 대해 제한적으로 찍은 이미지가 이닌, 실제 이미지 데이터에 대해서도 scene 전체의 관점을 이동시키는 task도 비교적 잘 해냅니다. 88개의 학습 이미지 씬을 바탕으로 실험을 진행하여도 위와 같이 다양한 각도에서의 이미지를 만들어 냅니다. NeRF와 비교하면 적은 데이터로 전체 이미지 씬에 대한 모델링을 훨씬 잘 하고 있다는 것을 볼 수 있습니다.
+
+![](../images/figure7.png)
+
+![](../images/figure8.png)
 
 위 실험들을 통해 pixelNeRF가 ShapeNet과 같은 정형화된 3D dataset 뿐만 아니라, multi-object image, unseen image, real scene image등 다양한 환경에 적용할 수 있음이 증명되었습니다. 또한, 이 모든 과정이 기존 NeRF보다 훨씬 적은 이미지만으로도 가능함도 보였습니다.
 
@@ -207,14 +208,14 @@ Few-shot view synthesis의 경우, 여러 사진이 들어오기 때문에 query
 
 본 논문에서 제안한 pixelNeRF는 적은 수의 이미지 만으로도 view synthesis task를 잘 해결하기 위해 기존 NeRF에 scene prior를 학습하는 과정을 추가하여 NeRF를 비롯한 기존 view synthesis 모델들의 한계점을 보완하였습니다. 다양한 실험을 통해 pixelNeRF가 일반화된 다양한 환경(multi-objects, unseen category, real dataset etc.)에서 잘 작동함을 알 수 있습니다.
 
-그러나 아직도 몇가지 한계점들은 존재하는데요. NeRF와 마찬가지로 rendering시간이 굉장히 오래걸리며, ray sampling bounds/positional encoding에 사용되는 parameter등을 수동으로 조정해야하기때문에 scale-variant합니다. 또한, DTU에 대한 실험으로 real image에 대한 적용 가능성을 보였지만 이 데이터셋도 어느정도 제약된 상황에서 만들어졌기 때문에 굉장히 raw한 real dataset에대해서도 비슷한 성능을 낼 수 있을지는 아직 보장되지 않았습니다. 
-
+그러나 아직도 몇가지 한계점들은 존재하는데요. NeRF와 마찬가지로 rendering시간이 굉장히 오래걸리며, ray sampling bounds/positional encoding에 사용되는 parameter등을 수동으로 조정해야하기때문에 scale-variant합니다. 또한, DTU에 대한 실험으로 real image에 대한 적용 가능성을 보였지만 이 데이터셋도 어느정도 제약된 상황에서 만들어졌기 때문에 굉장히 raw한 real dataset에대해서도 비슷한 성능을 낼 수 있을지는 아직 보장되지 않았습니다.
 
 #### Take home message
-* 최근 2D 이미지 만으로 실제 물체를 모델링해 여러 각도에서 보여주는 연구들이 진행되며 많은 관심을 받고 있다.
-* 이때 주어진 이미지 내 pixel값 뿐만 아니라 이미지가 내포하고 있는 feature들을 추출해 사용하면 (복원력/효율성 측면에서 모두) 훨씬 더 좋은 성능을 낼 수 있다. 
 
-> 현재 가장 관심을 받고 있으며, 매우 높은 활용가치를 갖는 분야이기 때문에 오늘 소개한 논문 뿐만 아니라 관련 분야(neural implicit representation, view synthesis)의 논문도 많이 찾아보고 읽어보면 좋을 것 같습니다. 궁금한 사항이 생기시면 언제든 아래 주소로 연락주시면 답변해드리겠습니다. 
+* 최근 2D 이미지 만으로 실제 물체를 모델링해 여러 각도에서 보여주는 연구들이 진행되며 많은 관심을 받고 있다.
+* 이때 주어진 이미지 내 pixel값 뿐만 아니라 이미지가 내포하고 있는 feature들을 추출해 사용하면 (복원력/효율성 측면에서 모두) 훨씬 더 좋은 성능을 낼 수 있다.
+
+> 현재 가장 관심을 받고 있으며, 매우 높은 활용가치를 갖는 분야이기 때문에 오늘 소개한 논문 뿐만 아니라 관련 분야(neural implicit representation, view synthesis)의 논문도 많이 찾아보고 읽어보면 좋을 것 같습니다. 궁금한 사항이 생기시면 언제든 아래 주소로 연락주시면 답변해드리겠습니다.
 
 ### 6. Author
 

@@ -182,14 +182,14 @@ Few-shot view synthesis의 경우 여러 사진이 들어오기 때문에 query 
 크게 세가지의 실험을 통해 pixelNeRF의 성능을 잘 보여주었습니다.
 
 1.  ShapeNet 벤치마크 데이터셋에서 category-specific한 경우와 category-agnostic한 경우 모두에서의 view synthesis를 시행하였습니다.
-
-    ![figure5](../images/figure5.png){: width="100" height="100"}
-
+   
+   <img src = "../images/figure5.png" width="100%">
     ![figure6](../images/figure6.png){: width="100" height="100"}
 
     * achieve new sota results for view synthesis and shapenet both setting. train a single model to the 13 largest categories of shapenet.
     * softras (comparing model) outputs a mesh of limited resolution and cannot represent arbitrary topologies
     * DVR uses an implicit surfaceto allow arbitrary topology it tends to misfind structure since it continues to use a single global latent vector. SRN does not use image features at all and instead requires a test time latent version step using ground truth absolute camera poses. pixelnerf catures more fine detail in both appearance and geometry compared to the baselines.
+    
 2.  학습된 prior를 통해 ShapeNet 데이터 내 unseen category혹은 multi-object data에 대해서도 view synthesis를 적용 가능함을 보였다.
 
     ![figure7](../images/figure7.png){: width="100" height="100"}

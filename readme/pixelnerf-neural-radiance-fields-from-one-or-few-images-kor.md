@@ -67,16 +67,19 @@ $$
 **Notaion**
 
 * camera ray $$r(t)=o+td$$
-  * $$t$$: 실제 물체(원점)에서부터 구하고자 하는 사이의 거리.
-  * $$d$$: viewing direction unit vector
-  * $$o$$: origin
+  * $$t$$: 실제 물체(원점)에서부터 구하고자 하는 사이의 거리
+  * $$d$$: 바라보는 방향에 대한 unit vector
+  * $$o$$: 원점
 *   $$T(t)=exp(-\int_{t_n}^t\sigma(s)ds)$$
 
     : t점을 가로막고 있는 점들의 density의 합 ($$\approx$$ 광선이 다른 입자에 부딪히지 않고 $$t_n$$에서 $$t$$로 이동할 확률)
 * $$\sigma(t)$$ : t 지점에서의 density값
 * $$c(t)$$: t점에서의 RGB값
 
-이렇게 구한 추정된 RGB값 $$\hat{C}_r$$과 실제 RGB값 $$C(r)$$ 의 차이로 loss를 계산하여 학습을 진행합니다. $$\mathcal{L}=\Sigma_r ||\hat{C}_r -C(r)||^2_2$$
+이렇게 구한 추정된 RGB값 $$\hat{C}_r$$과 실제 RGB값 $$C(r)$$ 의 차이로 loss를 계산하여 학습을 진행합니다. 
+$$
+\mathcal{L}=\Sigma_r ||\hat{C}_r -C(r)||^2_2
+$$
 
 이 과정들은 모두 미분이 가능하기에 gradient descent로 최적화 가능합니다.
 
@@ -131,7 +134,7 @@ $$
 f(\gamma(x),d;W(\pi(x)))=(\sigma,c)\
 $$
 
-1. NeRF에서와 동일한 방법으로 volume rendering을 진행합니다.
+4. NeRF에서와 동일한 방법으로 volume rendering을 진행합니다.
 
 즉, nerf와 달리 input에 대한 pre-processing을 통해 input image의 spatial feature를 추출하고 이것을 nerf network에 추가한다는 점이 기존 nerf와 차별화된 점이라 할 수 있습니다.
 
@@ -221,7 +224,7 @@ PixelNeRF can obtain some reconstruction from only one view and outputs better r
 * KAIST AI
 * Contact
   * email: <daheekwon@kaist.ac.kr>
-  * github: <github.com/daheekwon>
+  * github: <https://github.com/daheekwon>
 
 ### 7. Reference & Additional materials
 

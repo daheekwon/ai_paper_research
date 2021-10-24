@@ -53,12 +53,12 @@ $$
   * $$o$$: origin
 *   $$T(t)=exp(-\int_{t_n}^t\sigma(s)ds)$$
 
-    : summation of the density values of the points blocking point $$t$$. ($$\approx$$ The probability that light rays will move from $t_n$$ to $t$$ without hitting other particles.)
+    : summation of the density values of the points blocking point $$t$$. ($$\approx$$ The probability that light rays will move from $$t_n$$ to $$t$$ without hitting other particles.)
     
 * $$\sigma(t)$$ : density value on point $$t$$
 * $$c(t)$$: RGB value on point $$t$$
 
-The training proceeds by calculating the loss by the difference between the estimated RGB value $$\hat{C}_r$$ and the actual RGB value $C(r)$$.
+The training proceeds by calculating the loss by the difference between the estimated RGB value $$\hat{C}_r$$ and the actual RGB value $$C(r)$$.
 
 $$
 \mathcal{L}=\Sigma_r ||\hat{C}_r -C(r)||^2_2
@@ -125,7 +125,7 @@ First of all, let's take a look at Single-image pixel NeRF.
 2. After that, for the points on camera ray $$x$$, we obtain the each corresponding image feature.
    * Project the camera ray $$x$$ onto image plane and compute the corresponding image coordinate $$\pi(x)$$.
    * Compute corresponding spatial feature $$W(\pi(x))$$ by using bilinear interpolation.
-3. Put the $W(\pi(x))$$ and $\gamma(x)$ and d$$$ in the NeRF network and obtain the color and density values.
+3. Put the $W(\pi(x))$$ and $$\gamma(x)$$ and $$d$$ in the NeRF network and obtain the color and density values.
 
 $$
 f(\gamma(x),d;W(\pi(x)))=(\sigma,c)\
@@ -137,10 +137,6 @@ That is the main difference with NeRF is that the feature of the input image is 
 
 
 #### 3.2 Multi-view pixelNeRF
-
-Few-shot view synthesis의 경우, 여러 사진이 들어오기 때문에 query view direction을 통해 (target direction에 대한) 특정 image feature의 중요도를 볼 수 있습니다. 만약 input view와 target direction이 비슷하다면, 모델은 input으로 학습된 데이터를 바탕으로 추론하면 될 것이고, 그렇지 않다면 기존 학습된 prior를 활용해야 할 것입니다.
-
-multi-view 모델 구조의 기본적인 틀은 single-shot pixelNeRF와 여러 이미지를 모두 고려하기 위해 달라지는 부분들이 있습니다.
 
 In the case of the Few-shot view synthesis, multiple photos come in, so we can see the importance of a specific image feature through the query view direction. If the input and target direction are similar, the model can be inferred based on the input, otherwise you will have to utilize the existing learned prior.
 
@@ -201,8 +197,6 @@ This is the result of training the pixelNeRF only for some categories (cars, air
 
 3\. View synthesis for real scene data such as DTU MVS dataset
 
-위 shapenet처럼 특정 물체에 대해 제한적으로 찍은 이미지가 이닌, 실제 이미지 데이터에 대해서도 scene 전체의 관점을 이동시키는 task도 비교적 잘 해냅니다. 88개의 학습 이미지 씬을 바탕으로 실험을 진행하여도 위와 같이 다양한 각도에서의 이미지를 만들어 냅니다. NeRF와 비교하면 적은 데이터로 전체 이미지 씬에 대한 모델링을 훨씬 잘 하고 있다는 것을 볼 수 있습니다.
-
 The model can reconstruct the real scene data from different angle as well as limited object pictures like shapenet. Even if the experiment is conducted based on only 88 learning image scenes, compared to NeRF, images from various angles are created very well as below.
 
 ![](../images/figure8.png)
@@ -210,12 +204,6 @@ The model can reconstruct the real scene data from different angle as well as li
 According to these experiments, it is proven that the pixelNeRF can be applied to not only standard 3d object images but also more general cases such as multi-object image, unseen image, real scene image. In addition, it seemed that all of these processes are possible with much fewer images than the vanilla NeRF.
 
 ### 5. Conclusion
-
-본 논문에서 제안한 pixelNeRF는 적은 수의 이미지 만으로도 view synthesis task를 잘 해결하기 위해 기존 NeRF에 scene prior를 학습하는 과정을 추가하여 NeRF를 비롯한 기존 view synthesis 모델들의 한계점을 보완하였습니다. 또한, 다양한 실험을 통해 pixelNeRF가 일반화된 다양한 환경(multi-objects, unseen category, real dataset etc.)에서 잘 작동함을 보였습니다.
-
-그러나 아직도 몇가지 한계점들은 존재하는데요. NeRF와 마찬가지로 rendering시간이 굉장히 오래걸리며, ray sampling bounds/positional encoding에 사용되는 parameter등을 수동으로 조정해야하기때문에 scale-variant합니다. 또한, DTU에 대한 실험으로 real image에 대한 적용 가능성을 보였지만 이 데이터셋도 어느정도 제약된 상황에서 만들어졌기 때문에 굉장히 raw한 real dataset에대해서도 비슷한 성능을 낼 수 있을지는 아직 보장되지 않았습니다.
-
-그럼에도 현재 많은 관심을 받고 있는 NeRF의 성능을 높이고 보다 일반화된 task로 확장시켰다는 점에서 충분히 의미있는 연구라 생각이 됩니다. 논문에 대한 설명을 읽고 궁금한 사항이 생기시면 언제든 아래 주소로 연락주시면 답변해드리겠습니다 :)
 
 In order to solve the view synthesis task well with only a small number of images, the pixel NeRF complements the limitations of existing view synthesis models, including NeRF, by adding a process of learning scene prior to the existing NeRF. In addition, the experiments have shown that pixelNeRF works well in various generalized environments (multi-objects, unseen categories, real data etc.).
 

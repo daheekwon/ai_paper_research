@@ -186,25 +186,28 @@ NeRF network $$f$$ also use the ResNet structure, putting the coordinate and vie
 
 In the paper, hree major experiments are conducted and shows the performance of pixel NeRF well.
 
-1.  ShapeNet 벤치마크 데이터셋에서 category-specific한 경우와 category-agnostic한 경우 모두에서의 view synthesis를 시행하였습니다.
+1.  Evaluating pixelNeRF on category-specific and category-agnostic view synthesis task on ShapeNet. 
 
     ![](../images/figure5.png)![](../images/figure6.png)
+    
+A single pixelNerF model is trained on the largest 13 cateogries of shapenet. As can be seen from the above results, pixel NeRF shows SOTA results in terms of view synthesis. For both category-specific and category-agnostic setting, all create the most sophisticated and plausible images, while image performance measures PSNR and SSIM also show the highest figures.
 
-    하나의 pixelNeRF모델을 shapenet 내 가장 많은 13개의 카테고리에 대해 학습한 실험입니다. 위 결과를 보면 알 수 있듯이 pixelNeRF는 view synthesis의 측면에서 SOTA 결과를 보이고 있습니다. category-specific / category-agnostic한 경우 모두에서 가장 정교하고 그럴듯한 이미지를 생성하며, 이미지 성능 측도인 PSNR, SSIM 또한 가장 높은 수치를 보입니다.
 
-2\. 학습된 prior를 통해 ShapeNet 데이터 내 unseen category혹은 multi-object data에 대해서도 view synthesis를 적용 가능함을 보였습니다.
+2\. Through the learned prior, they have shown that view synthesis is also applicable to unseen categories or multi-object data in ShapeNet data.
 
 ![](../images/figure7.png)
 
-모델을 자동차와 비행기 그리고 의자에 대해서만 학습을 시킨 후, 다른 카테고리에 대해 view synthesis를 진행한 결과입니다. 여기서도 pixelNeRF의 성능이 잘 나타남을 알 수 있습니다. 논문에선 이렇게 일반화 가능한 이유가 바로 canonical space가 아닌 카메라의 상대적인 위치(view space)를 사용했기 때문이라고 설명합니다.
+This is the result of training the pixelNeRF only for some categories (cars, airplanes, and chairs) and then conducting a view synthesis for other categories. As you can see, the performance of pixelNeRF is also good for unseen categories. The author explains that these generalization is possible because the camera's relative position (view space) was used, not the canonical space.
 
-3\. DTU MVS dataset과 같은 실제 장면에 대해서도 view synthesis를 시행하였습니다.
+3\. View synthesis for real scene data such as DTU MVS dataset
 
 위 shapenet처럼 특정 물체에 대해 제한적으로 찍은 이미지가 이닌, 실제 이미지 데이터에 대해서도 scene 전체의 관점을 이동시키는 task도 비교적 잘 해냅니다. 88개의 학습 이미지 씬을 바탕으로 실험을 진행하여도 위와 같이 다양한 각도에서의 이미지를 만들어 냅니다. NeRF와 비교하면 적은 데이터로 전체 이미지 씬에 대한 모델링을 훨씬 잘 하고 있다는 것을 볼 수 있습니다.
 
+The model can reconstruct the real scene data from different angle as well as limited object pictures like shapenet. Even if the experiment is conducted based on only 88 learning image scenes, compared to NeRF, images from various angles are created very well as below.
+
 ![](../images/figure8.png)
 
-위 실험들을 통해 pixelNeRF가 ShapeNet과 같은 정형화된 3D dataset 뿐만 아니라, multi-object image, unseen image, real scene image등 다양한 환경에 적용할 수 있음이 증명되었습니다. 또한, 이 모든 과정이 기존 NeRF보다 훨씬 적은 이미지만으로도 가능함도 보였습니다.
+According to these experiments, it is proven that the pixelNeRF can be applied to not only standard 3d object images but also more general cases such as multi-object image, unseen image, real scene image. In addition, it seemed that all of these processes are possible with much fewer images than the vanilla NeRF.
 
 ### 5. Conclusion
 
@@ -214,10 +217,19 @@ In the paper, hree major experiments are conducted and shows the performance of 
 
 그럼에도 현재 많은 관심을 받고 있는 NeRF의 성능을 높이고 보다 일반화된 task로 확장시켰다는 점에서 충분히 의미있는 연구라 생각이 됩니다. 논문에 대한 설명을 읽고 궁금한 사항이 생기시면 언제든 아래 주소로 연락주시면 답변해드리겠습니다 :)
 
+In order to solve the view synthesis task well with only a small number of images, the pixel NeRF complements the limitations of existing view synthesis models, including NeRF, by adding a process of learning scene prior to the existing NeRF. In addition, the experiments have shown that pixelNeRF works well in various generalized environments (multi-objects, unseen categories, real data etc.).
+
+But there are still some limitations. Like NeRF, rendering takes a very long time, and it is scale-variant because parameters for ray sampling boundaries or positional encoding need to be manually adjusted. In addition, experiments on DTU showed potential applicability to real images, but since this dataset was created in a limited situation, it is not yet guaranteed that it will perform similarly on real raw datasets.
+
+Nevertheless, I think it is a meaningful study in that it has improved the performance of NeRF, which is currently receiving a lot of attention, and expanded it to a more generalized setting. If you have any questions after reading this review of the paper, please feel free to contact me :)
+
+
 #### Take home message
 
-* 최근 2D 이미지 만으로 실제 물체를 모델링해 여러 각도에서 보여주는 연구들이 활발히 진행되며 특히 neural implicit representation을 활용한 연구가 많은 관심을 받고 있다.
-* 이때 주어진 이미지 내 pixel값 뿐만 아니라 이미지가 내포하고 있는 feature들을 추출해 사용하면 (복원력/효율성 측면에서 모두) 훨씬 더 좋은 성능을 낼 수 있다.
+* Recently, studies that model real objects with only 2D images and show them from various angles have been actively conducted.
+* In particular, studies using natural impression presentation are attracting much attention.
+* If you extract spatial feature and use them with the pixel values in a given image, you can perform much better (both in terms of reconstruction and efficiency).
+
 
 ### 6. Author
 
@@ -231,7 +243,7 @@ In the paper, hree major experiments are conducted and shows the performance of 
 ### 7. Reference & Additional materials
 
 * [NeRF paper](https://arxiv.org/abs/2003.08934)
-* [NeRF 설명영상](https://www.youtube.com/watch?v=zkeh7Tt9tYQ)
+* [NeRF explanation video](https://www.youtube.com/watch?v=CRlN-cYFxTk)
 * [pixelNeRF official site](https://alexyu.net/pixelnerf/)
 * [pixelNeRF code](https://github.com/sxyu/pixel-nerf)
 

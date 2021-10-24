@@ -97,18 +97,19 @@ As shown in the figure below, you can see that pixel NeRF produces great results
 
 ![figure1](../images/figure1.png)
 
-### 3. Methodology
+### 3. Methods
 
-그럼 이제 PixelNeRF모델의 작동 메커니즘에 대해 알아봅시다. 모델의 구조는 크게 두 파트로 나눌 수 있습니다.
+Then let's move on to the PixelNeRF. The structure of the model can be largely divided into two parts.
 
-* fully-convolutional image encoder $$E$$ : input image를 pixel-aligned feature로 인코딩 하는 부분
-* NeRF network $$f$$ : 객체의 색과 밀도를 연산하는 부분
+* fully-convolutional image encoder $$E$$ : encoding input images into the pixel-aligned features
+* NeRF network $$f$$ : computing the color and density values of object
 
-인코더 $$E$$ 의 output값이 nerf network의 input으로 들어가게 되는 것이지요. 이제 이 과정에 대해 자세히 설명해보도록 하겠습니다.
+The output of encoder $$E$$ goes into the input of nerf network. 
 
 #### 3.1 Single-Image pixelNeRF
 
-이 논문은 pixelnerf를 single-shot과 multi-shot으로 나누어 학습방법을 소개합니다. 우선 Single-image pixelNeRF부터 살펴보도록 합시다.
+This paper introduces the method by dividing Pixelnerf into single-shot and multi-shot. 
+First of all, let's take a look at Single-image pixel NeRF.
 
 **Notation**
 
@@ -120,19 +121,20 @@ As shown in the figure below, you can see that pixel NeRF produces great results
 
 ![](../images/figure4.png)
 
-1. 우선 input image $$I$$ 를 encoder에 넣어 spatial feature vector W를 추출합니다.
-2. 그 후 camera ray $$x$$ 위의 점들에 대해, 각각에 대응되는 image feature를 구합니다.
-   * camera ray $$x$$ 를 이미지 평면에 projection시키고 이에 해당하는 좌표 $$\pi(x)$$ 구합니다.
-   * 이 좌표 해당하는 spatial feature $$W(\pi(x))$$를 bilinear interpolation을 사용해 구합니다.
-3. 이렇게 구한 $$W(\pi(x))$$ 와 $$\gamma(x), d$$ 를 NeRF network에 넣고 color와 density값을 구합니다.
+1. Extract the spatial feature vector W by putting input image $$I$$ into the encoder $$E$$. 
+2. After that, for the points on camera ray $$x$$, we obtain the each corresponding image feature.
+   * Project the camera ray $$x$$ onto image plane and compute the corresponding image coordinate $$\pi(x)$$.
+   * Compute corresponding spatial feature $$W(\pi(x))$$ by using bilinear interpolation.
+3. Put the $W(\pi(x))$$ and $\gamma(x)$ and d$$$ in the NeRF network and obtain the color and density values.
 
 $$
 f(\gamma(x),d;W(\pi(x)))=(\sigma,c)\
 $$
 
-4\. NeRF에서와 동일한 방법으로 volume rendering을 진행합니다.
+4\. Do volume rendering in the same way as NeRF.
 
-즉, nerf와 달리 input에 대한 pre-processing을 통해 input image의 spatial feature를 추출하고 이것을 nerf network에 추가한다는 점이 기존 nerf와 차별화된 점이라 할 수 있습니다.
+That is the main difference with NeRF is that the feature of the input image is extracted through pre-processing and added to the network.
+
 
 #### 3.2 Multi-view pixelNeRF
 
@@ -140,12 +142,18 @@ Few-shot view synthesis의 경우, 여러 사진이 들어오기 때문에 query
 
 multi-view 모델 구조의 기본적인 틀은 single-shot pixelNeRF와 여러 이미지를 모두 고려하기 위해 달라지는 부분들이 있습니다.
 
-1. 우선 multi-view task를 풀기 위해 저자는 각 이미지들의 상대적인 카메라 위치를 알 수 있다고 가정합니다.
-2.  각각의 이미지 $$I^{(i)}$$ 속에서 원점에 위치한 객체들을 우리가 보고자하는 target 각도에서의 좌표에 맞게 변환합니다.
+In the case of the Few-shot view synthesis, multiple photos come in, so we can see the importance of a specific image feature through the query view direction. If the input and target direction are similar, the model can be inferred based on the input, otherwise you will have to utilize the existing learned prior.
+
+The basic framework of the multi-view model structure is almost similar to the single-shot pixel NeRF, but there are some points to consider because of additional images.
+
+1. First of all, in order to solve the multi-view task, it is assumed that we can know the relative camera location of each image.
+2. Then we transform the objects coordimate (located at origin in each image $$I^{(i)}$$) to match the coordinates at the target direction we want to see.
 
     $$P^{(i)} = [R^{(i)} \; t^{(i)}], \ x^{(i)}= P^{(i)}x$$, $$d^{(i)}= R^{(i)}d$$
-3. encoder를 통해 feature를 뽑을 땐 각각의 view frame마다 독립적으로 뽑아 NeRF network에 넣고 NeRF network의 final layer에서 합칩니다. 이는 다양한 각도에서의 이미지에서 최대한 많은 spatial feature을 뽑아내기 위한 것입니다.
-   *   논문에선 이를 수식으로 나타내기 위해 NeRF network의 initial layer를 $$f_1$$, intermediate layer를 $$V^{(i)}$$, final layer를 $$f_2$$ 라 표기합니다.
+    
+3. When extracting features through encoder, select them independently for each view frame, and put them in the NeRF network. In the final layer of the NeRF networ, we combine them. This is for extracting as many spatial features as possible from images from various angles.
+
+   *   In the paper, to express this as an expression, we denote the initial layer of the NeRF network as $$f_1$$, the intermediate layer as $$V^{(i)}$$, and the final layer as $$f_2$$.
 
        $$
        V^{(i)}=f_1(\gamma(x^{(i)}),d^{(i)}; W^{(i)}(\pi(x^{(i)}))) \\\ (\sigma,c)= f_2 (\psi(V^{(i)},...,V^{(n)}))\
@@ -153,31 +161,30 @@ multi-view 모델 구조의 기본적인 틀은 single-shot pixelNeRF와 여러 
 
        * $$\psi$$: average pooling operator
 
-multi-view pixelNeRF의 단순화 버전이 single-view pixelNeRF인 셈입니다.
+> Single-view pixel NeRF is the simplified version of multi-view pixel NeRF.
 
 ### 4. Experiments
 
 **Baselines & Dataset**
 
-* 기존 few-shot / single-shot view synthesis의 SOTA 모델이었던 SRN과 DVR, 그리고 비슷한 구조(neural radiance field)의 네트워크를 사용한 NeRF와 비교합니다.
-* 3D 물체에 대한 벤치마크 데이터셋인 ShapeNet, 그리고 보다 실제 사진과 흡사한 DTU 데이터셋에 대해 모두 실험을 진행하며 pixelNeRF의 성능을 보여줍니다.
+* Comparing pixelNeRF with SRN and DVR, which were SOTA models of the existing few-shot view synthesis, and NeRF, which uses similar networks structures.
+* Experiments are conducted on ShapeNet, a benchmark dataset for 3D objects, and DTU datasets that resemble more real photos, showing the performance of pixelNeRF.
 
 **Metrics**
 
-이때 성능 지표로는 많이 사용하는 image qualifying metric들을 사용하였습니다.
+For the performance indicator, widely used image qualifying metrics(PSNR, SSIM) are used. 
 
 * PSNR: $$10 log_{10}(\frac{R^2}{MSE})$$
 * SSIM: $$\frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy}+C_2)}{(\mu_x^2+ \mu_y^2+ C_1)(\sigma_x^2+\sigma_y^2+C_2)}$$
 
 **Training setup**
 
-본 논문의 실험에선 imagenet에 pretrained된 resnet34 모델을 backbone network로 사용합니다. 4번째 pooling layer까지 feature를 추출하고, 그 이후 layer에선 (위 3에서 설명했듯이) 대응되는 좌표에 맞는 feature를 찾는 과정을 거칩니다. 이때, local한 feature와 global한 feature를 모두 사용하기위해, feature pyramid형태로 추출합니다. 여기서 feature pyramid란 서로 다른 해상도의 feature map을 쌓아올린 형태를 말합니다.
+In the experiment of this paper, the reset34 model pretrained on the imagenet is used as the backbone network. Feature is extracted up to the $$4^{th}$$ pooling layer, and after that, the layer goes through the process of finding a feature that fits the corresponding coordinates (as described in 3 above). To use both local and global features, we extract features in the form of feature pyramid. (feature pyramid refers to a form in which feature maps of different resolutions are stacked.)
 
-또한, NeRF network $$f$$에서도 ResNet구조를 차용하여 좌표 및 viewing direction $$\gamma(x), d$$를 먼저 입력하고 feature vector $$W(\phi(x))$$를 residual로써 각 ResNet block 앞부분에 더합니다.
+NeRF network $$f$$ also use the ResNet structure, putting the coordinate and viewing direction ($$\gamma(x), d$$) as inputs first and then add feature vector $$W(\phi(x))$$ as a residual at the beginning of each ResNet block.
 
-***
 
-크게 세가지의 실험을 통해 pixelNeRF의 성능을 잘 보여주었습니다.
+In the paper, hree major experiments are conducted and shows the performance of pixel NeRF well.
 
 1.  ShapeNet 벤치마크 데이터셋에서 category-specific한 경우와 category-agnostic한 경우 모두에서의 view synthesis를 시행하였습니다.
 

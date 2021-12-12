@@ -38,7 +38,7 @@ $$
 * Input: pixel의 위치 $$X \in \mathbb{R}^3$$ 와 보는 방향을 나타내는 unit vector $$d \in \mathbb{R}^2$$
 * Output: color 값과 density $$\sigma$$
 
-그렇다면, 함수 $$F_\Theta$$를 통해 구한 color와 density값으로 어떻게 새로운 이미지를 랜더링할까요?
+그렇다면, 함수 $$F_\Theta$$를 통해 구한 color와 density값으로 어떻게 새로운 이미지를 랜더링할까요? (이 이미지 랜더링 과정을 논문에선 volume rendering이라 칭합니다.)
 
 함수로 연산한 color값은 3차원 좌표에서의 RGB값을 말합니다. 이때 다른 각도에서 바라본 2D 이미지를 생성하려면, (그 방향에서 바라보았을 때) 앞에 위치한 부분에 가려지거나, 뒤에 위치한 것이 비치는 경우 등을 고려해야 합니다. 바로 이게 우리가 함수를 통해 구한 density가 필요한 이유이지요.
 

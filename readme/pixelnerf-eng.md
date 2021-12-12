@@ -74,7 +74,7 @@ To summarize one more time through the figure, (a) extract three-dimensional coo
 
 _In addition to this basic structure, the paper uses various techniques to improve performance, such as positional encoding and hierarchical volume sampling, but that part will be omitted as it is out of topic this paper review posting._
 
-> This is the explanation of NeRF to understand this paper. If you think it is not enough, please refer to the link below. :)
+> This is the explanation of NeRF to understand this paper. If you think it is not enough, please refer to the [link](https://www.youtube.com/watch?v=CRlN-cYFxTk). :)
 
 ####
 
@@ -118,6 +118,7 @@ First of all, let's take a look at Single-image pixel NeRF.
 * $$x$$: camera ray
 * $$\pi(x)$$: image coordinates
 * $$\gamma(\cdot)$$ : positional encoding on $$x$$
+* $$d$$: unit vector about viewing direction
 
 ![](../images/figure4.png)
 
@@ -125,7 +126,7 @@ First of all, let's take a look at Single-image pixel NeRF.
 2. After that, for the points on camera ray $$x$$, we obtain the each corresponding image feature.
    * Project the camera ray $$x$$ onto image plane and compute the corresponding image coordinate $$\pi(x)$$.
    * Compute corresponding spatial feature $$W(\pi(x))$$ by using bilinear interpolation.
-3. Put the $W(\pi(x))$$ and $$\gamma(x)$$ and $$d$$ in the NeRF network and obtain the color and density values.
+3. Put the $$W(\pi(x))$$ and $$\gamma(x)$$ and $$d$$ in the NeRF network and obtain the color and density values. (-> Nerf network)
 
 $$
 f(\gamma(x),d;W(\pi(x)))=(\sigma,c)\
@@ -133,8 +134,8 @@ $$
 
 4\. Do volume rendering in the same way as NeRF.
 
-That is the main difference with NeRF is that the feature of the input image is extracted through pre-processing and added to the network.
-
+> That is the main difference with NeRF is that the feature of the input image is extracted through pre-processing and added to the network.
+Adding (spatial) feature information allows the network to learn implicit relationships between individual information in units of pixels, which allows stable and accurate inference with less data.
 
 #### 3.2 Multi-view pixelNeRF
 
@@ -171,7 +172,11 @@ The basic framework of the multi-view model structure is almost similar to the s
 For the performance indicator, widely used image qualifying metrics(PSNR, SSIM) are used. 
 
 * PSNR: $$10 log_{10}(\frac{R^2}{MSE})$$
+  - It is used for evaluating information loss on image quality as a ratio of noise to a maximum signal that may have.
+  - $$R$$: maximum value of the certain image
 * SSIM: $$\frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy}+C_2)}{(\mu_x^2+ \mu_y^2+ C_1)(\sigma_x^2+\sigma_y^2+C_2)}$$
+  - Based on the assumption that the degree of distortion of image structure information has great influence on image quality, it is a metric designed for evaluating perceptual image differences, not numerical errors.
+  - Intuitively speaking, It can be computed as Luminance x contrast x correlation coefficient between two images. 
 
 **Training setup**
 
@@ -205,7 +210,7 @@ According to these experiments, it is proven that the pixelNeRF can be applied t
 
 ### 5. Conclusion
 
-In order to solve the view synthesis task well with only a small number of images, the pixel NeRF complements the limitations of existing view synthesis models, including NeRF, by adding a process of learning scene prior to the existing NeRF. In addition, the experiments have shown that pixelNeRF works well in various generalized environments (multi-objects, unseen categories, real data etc.).
+In order to solve the view synthesis task well with only a small number of images, the pixel NeRF complements the limitations of existing view synthesis models, including NeRF, by adding a process of learning spatial feature vectors to the existing NeRF. In addition, the experiments have shown that pixelNeRF works well in various generalized environments (multi-objects, unseen categories, real data etc.).
 
 But there are still some limitations. Like NeRF, rendering takes a very long time, and it is scale-variant because parameters for ray sampling boundaries or positional encoding need to be manually adjusted. In addition, experiments on DTU showed potential applicability to real images, but since this dataset was created in a limited situation, it is not yet guaranteed that it will perform similarly on real raw datasets.
 
